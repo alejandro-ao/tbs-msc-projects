@@ -45,14 +45,14 @@ df$cluster <- factor(km$cluster)
 centers = as.data.frame(km$centers)
 
 # creating the plots
-g1=ggplot(data=df, aes(x=customers$recency.z, y=customers$frequency.z, color=cluster)) + geom_point()+
-  geom_point(data=centers, aes(x=centers$recency.z, y=centers$frequency.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
+g1=ggplot(data=df, aes(x=recency.z, y=frequency.z, color=cluster)) + geom_point()+
+  geom_point(data=centers, aes(x=recency.z, y=frequency.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
 
-g2=ggplot(data=df, aes(x=customers$recency.z, y=customers$monetary.z, color=cluster)) + geom_point()+
-  geom_point(data=centers, aes(x=centers$recency.z, y=centers$monetary.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
+g2=ggplot(data=df, aes(x=recency.z, y=monetary.z, color=cluster)) + geom_point()+
+  geom_point(data=centers, aes(x=recency.z, y=monetary.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
 
-g3=ggplot(data=df, aes(x=customers$frequency.z, y=customers$monetary.z, color=cluster)) + geom_point()+
-  geom_point(data=centers, aes(x=centers$frequency.z, y=centers$monetary.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
+g3=ggplot(data=df, aes(x=frequency.z, y=monetary.z, color=cluster)) + geom_point()+
+  geom_point(data=centers, aes(x=frequency.z, y=monetary.z), color=c("indianred1", "khaki3", "lightgreen", "lightskyblue", "plum2"), size=8, show.legend=FALSE)
 
 grid.arrange(g1,g2,g3)
 
