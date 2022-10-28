@@ -86,6 +86,7 @@ prop.table(table(pred.hw, test$highwage),2) # % by column
 # reason 1: the breakpoint of 150 for high wage was not good
 # --> maybe a lower breakpoint would be better
 # reason 2: a linear model is too simple, use splice and GAMS instead
+# reason 3: too few vars. add more explanatory variables?
 
 
 
