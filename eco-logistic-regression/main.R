@@ -42,6 +42,8 @@ data.res <- data.lr[(education != "1. < HS Grad"), ]
 # model estimation
 mod1 <- glm(highwage~age+education+year, family=binomial, data=data.res)
 summary(mod1)
+# all the coefficients seem to have an impact on the log of odds, 
+# and thus in the prediction. So there is no need to clean the model.
 
 # create training set / test set
 set.seed(1)
@@ -88,8 +90,55 @@ prop.table(table(pred.hw, test$highwage),2) # % by column
 # reason 2: a linear model is too simple, use splice and GAMS instead
 # reason 3: too few vars. add more explanatory variables?
 
+# -------------------------------------------------------------------------
+# GAMS logistic regression
+# -------------------------------------------------------------------------
 
+library(splines)
+library(gam)
 
+# natural cubic splines and GAMs
+mod.gam <- glm(highwage~ns(age, knots=c(25, 40, 60)) +
+                 ns(year, df=6) + 
+                 education, 
+               family="binomial",
+               data=data.res)
 
+par(nfrow=c(1,3))
+plot.Gam(mod.gam, se=T, col="red")
+par(nfrow=c(1,1))
 
+# we can either fix the number of knots or the degrees of freedom
+# the higher the number of knots, the more flexible the solution
+
+# -------------------------------------------------------------------------
+# Evaluating prediction accuracy for mod.gam
+# -------------------------------------------------------------------------
+mod.gamt <- glm(highwage~ns(age, knots=c(25, 40, 60)) +
+                 ns(year, df=6) + 
+                 education, 
+               family="binomial",
+               data=train)
+
+# prediction on the test set
+pred.hw <- predict(mod.gamt, newdata=test, type="response")
+head(pred.hw)
+pred.hw <- ifelse(pred.hw > 0.5, 1, 0)
+
+test$highwage <- ifelse(test$highwage == "Highwage", 1, 0)
+
+misclass.err <- mean(pred.hw != test$highwage)
+misclass.err
+print(paste("Prediction accuracy = ", 1-misclass.err))
+
+# confusion matrix
+pred.hw <- factor(pred.hw, 
+                  levels=c(0,1), 
+                  labels=c("Predicted low wage", "Predicted high wage"))
+
+test$highwage <- factor(test$highwage, 
+                        levels=c(0,1), 
+                        labels=c("Low wage", "High wage"))
+table(pred.hw, test$highwage)
+prop.table(table(pred.hw, test$highwage),2) # % by column
 
