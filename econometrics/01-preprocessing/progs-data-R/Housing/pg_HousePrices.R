@@ -138,10 +138,10 @@ jarque.bera.test(data$Price)
 #############################################################################
 ## EXERCISES
 
-# 5.	Does the air-conditioned increase the price of the house?
+# 5.	Does AC increase the price of the house?
   
 # Compare statistics of Yes and No AC against Price
-tapply(data$Price, data$AirConditioned, summary)
+tapply(data$Price, data$AirConditioned, summary)s
 
 #Graph
 boxplot(data$Price~data$AirConditioned,
@@ -150,7 +150,8 @@ boxplot(data$Price~data$AirConditioned,
         xlab = "Air Conditioner",
         ylab = "Price")
 
-#### --> CHECKPOINT
+# --> apparently, it does. But let's use the t-test to see if the difference is 
+# significant
 
 # Test
 # Crossing of a continuous (quantitative) and categorical variable (qualitatives)
@@ -161,12 +162,12 @@ boxplot(data$Price~data$AirConditioned,
 # Two variances comparison test
 # H0 : Var1 = Var2 against H1 : Var1 # Var2
 var.test(data$Price~data$AirConditioned)
-
+?var.test
 # Student t-test
 # H0 : m1 = m2 against H1 : m1 # m2
 
 t.test (data$Price~data$AirConditioned, var.equal=T)
-
+?t.test
 
 # Non parametric version of the test
 # useful is the continuous variable is not normally distributed
@@ -174,7 +175,7 @@ t.test (data$Price~data$AirConditioned, var.equal=T)
 #Wilcoxon test
 # This test no longer relates to the values, but to the ranks of the observations.
 # The observations are listed in ascending order and numbered. 
-# The rank is the sequence number of the classified observation.
+# The rank is the sequence numºber of the classified observation.
 # This is a test of comparison of medians.
 # H0 M1=M1 agains H1 : M1#M2
 wilcox.test(data$Price~data$AirConditioned)                 

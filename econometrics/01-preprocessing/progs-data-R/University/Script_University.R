@@ -2,12 +2,12 @@
 ####Step 1 : import and clean data #############
 ################################################
 
+# ------------------------------------------------------------------------------
+# IMPORT AND SETUP
 
 #import data
 # data are in csv format
-
-
-data <- read.csv2("University1.csv", stringsAsFactors = TRUE)
+data <- read.csv2("./../01-preprocessing/progs-data-R/University/University1.csv", stringsAsFactors = TRUE)
 
 # verify data import
 
@@ -28,8 +28,11 @@ class(data$Name) #check the recoding
 
 ## verify data outliers
 
-# qualitative variables
+# ------------------------------------------------------------------------------
+# QUALITATIVE VARIABLES
 
+# ----------------------------------
+# Barplot of variables
 table(data$Higher.degree)
 prop.table(table(data$Higher.degree))
 
@@ -37,18 +40,17 @@ prop.table(table(data$Higher.degree))
 # https://statisticsglobe.com/display-all-x-axis-labels-of-barplot-in-r
 
 barplot(table(data$Higher.degree),horiz = F,las=2, cex.names=0.6,col="blue",main="Higher degree",ylab="Frequency", plot=TRUE)
-barplot(table(data$Higher.degree),horiz = F, cex.names=0.6,col="blue",main="Higher degree",ylab="Frequency")
-
-barplot(table(data$Higher.degree),horiz = TRUE,las=2,cex.names=0.5,col="blue",main="Higher degree",ylab="Frequency", plot=TRUE)
-barplot(table(data$Type),horiz = TRUE,cex.names=0.8,col="blue",main="Higher degree",ylab="Frequency", plot=TRUE)
-
+barplot(table(data$Type),horiz = F,cex.names=0.8,col="blue",main="Higher degree",ylab="Frequency", plot=TRUE)
 
 # las options: always parallel to the axis (the default, 0), 
 # always horizontal (1), 
 # always perpendicular to the axis (2), 
 # and always vertical (3).
 
-# group together categories with low frequency
+
+# ----------------------------------
+# Merging variables
+# group together categories with low frequency -> all doctors together
 str(data)
 
 data$Higher.degree.rec[data$Higher.degree=="Bachelor's degree"] <- "Bachelor's degree"
@@ -62,92 +64,92 @@ class(data$Higher.degree.rec)
 # affect the right type
 
 data$Higher.degree.rec <- as.factor(data$Higher.degree.rec)
+barplot(table(data$Higher.degree.rec), col="blue") # now they are grouped
+
 class(data$Higher.degree.rec)
 
-# order the categories
+# order the categories so doctors after masters
 data$Higher.degree.rec <- factor(data$Higher.degree.rec, order = T, levels =c("Bachelor's degree", "Master's degree", "Doctor's degree"))
-
+# now the categories are ordered:
 table(data$Higher.degree.rec)
+barplot(table(data$Higher.degree.rec), col="aquamarine")
 
 
 
 
+# ------------------------------------------------------------------------------
+# QUANTITATIVE VARIABLES
 
-
-# quantitatives variables
-
+# ----------------------------------
 # Histograms
-
+# they seem to form a logarithmic distribution 
+# (students has destructive outliers)
 par(mfrow = c(2,2))
-hist(data$Total.applicants, col="blue",main="Total applicants")
-hist(data$Total.eligibles, col="blue",main="Total eligibles")
-hist(data$Total.qualified, col="blue",main="Total qualified")
-hist(data$Total.students, col="blue",main="Total students")
-hist(data$Tuition.fees, col="blue",main="Tuition fees")
+hist(data$Total.applicants, col="aquamarine",main="Total applicants")
+hist(data$Total.eligibles, col="aquamarine",main="Total eligibles")
+hist(data$Total.qualified, col="aquamarine",main="Total qualified")
+hist(data$Total.students, col="aquamarine",main="Total students")
+hist(data$Tuition.fees, col="aquamarine",main="Tuition fees")
 
 par(mfrow = c(1,1))
 
-# We observe extreme values for all quantitative variables
-# In particular, for Total.students and Tuition.fees, there seems
-# to be one outlier very far from the other values
-
+# ----------------------------------
 # Boxplot
-
-
+# the outliers are even more evident when seeing the boxplot
 par(mfrow = c(2,2))
-boxplot(data$Total.applicants, col="blue",main="Total applicants")
-boxplot(data$Total.eligibles, col="blue",main="Total eligibles")
-boxplot(data$Total.qualified, col="blue",main="Total qualified")
-boxplot(data$Total.students, col="blue",main="Total.students")
-boxplot(data$Tuition.fees, col="blue",main="Tuition.fees")
+boxplot(data$Total.applicants, col="aquamarine",main="Total applicants")
+boxplot(data$Total.eligibles, col="aquamarine",main="Total eligibles")
+boxplot(data$Total.qualified, col="aquamarine",main="Total qualified")
+boxplot(data$Total.students, col="aquamarine",main="Total.students")
+boxplot(data$Tuition.fees, col="aquamarine",main="Tuition.fees")
 par(mfrow=c(1,1))
 
-# manage outliers
+# ----------------------------------
+# Manage outliers
 # delete observations where Total students > 400000 or Total Tuition.fees >150000
-
-
 data.wo <- data[data$Total.students < 400000  & data$Tuition.fees <150000,]
-boxplot(data.wo$Total.students, col="blue",main="Total.students")
-boxplot(data.wo$Tuition.fees, col="blue",main="Tuition.fees")
 
+boxplot(data.wo$Total.students, col="aquamarine",main="Total.students")
+boxplot(data.wo$Tuition.fees, col="aquamarine",main="Tuition.fees")
 
-
-# transform variables
-
+# ----------------------------------
+# Transform variables
+# Use log to convert them to normal distribution, since they follow 
+# a logarithmic distribution
+# https://medium.com/@kyawsawhtoon/log-transformation-purpose-and-interpretation-9444b4b049c9
 data.wo$log.Total.applicants=log(data.wo$Total.applicants)
 data.wo$log.Total.eligibles=log(data.wo$Total.eligibles)
 data.wo$log.Total.qualified=log(data.wo$Total.qualified)
 data.wo$log.Total.students=log(data.wo$Total.students)
 data.wo$log.Tuition.fees=log(data.wo$Tuition.fees)
 
-summary(data)
+summary(data.wo)
 
-hist(data.wo$log.Total.applicants, col="blue",main="log Total applicants")
-hist(data.wo$log.Total.eligibles, col="blue",main="log Total eligibles")
-hist(data.wo$log.Total.qualified, col="blue",main="log Total qualified")
-hist(data.wo$log.Total.students, col="blue",main="log Total.students")
-hist(data.wo$log.Tuition.fees, col="blue",main="log Tuition.fees")
+# ----------------------------------
+# Now the variables are more normal -> hist
+hist(data.wo$log.Total.applicants, col="blue",main="log Total applicants") # normal
+hist(data.wo$log.Total.eligibles, col="blue",main="log Total eligibles") # normal
+hist(data.wo$log.Total.qualified, col="blue",main="log Total qualified") # normal-ish
+hist(data.wo$log.Total.students, col="blue",main="log Total.students") # skewed
+hist(data.wo$log.Tuition.fees, col="blue",main="log Tuition.fees") # not normal
 
-
+# -> boxplots
 boxplot(data.wo$log.Total.applicants, col="blue",main="Log Total applicants")
 boxplot(data.wo$log.Total.eligibles, col="blue",main="Log Total eligibles")
 boxplot(data.wo$log.Total.qualified, col="blue",main="Log Total qualified")
 boxplot(data.wo$log.Total.students, col="blue",main="Log Total.students")
 boxplot(data.wo$log.Tuition.fees, col="blue",main="Log Tuition.fees")
 
-
-# verify missing values
+# ----------------------------------
+# Missing values
 summary(data.wo)
-
 sum(is.na(data.wo))
 
 dim(data.wo)
 
-
 library(mice)
-md.pattern(data.wo, rotate.names=TRUE)
-# Only 10 rows affected by missing values
-
+# plot the missing data
+md.pattern(data.wo, rotate.names=TRUE) # Only 10 rows affected by missing values
 
 
 # create a database without missing values
@@ -155,11 +157,11 @@ data.wo.complete <- na.omit(data.wo)
 summary(data.wo.complete)
 dim(data.wo.complete)
 
+# ------------------------------------------------------------------------------
+# Normality study - Graphical tests
 
-# Normality study
-
-
-# study the skewness and the kurtosis
+# ----------------------------------
+# Skewness and the kurtosis
 install.packages("moments")
 library(moments)
 
@@ -167,45 +169,68 @@ library(moments)
 # Skewness is close to 0
 # Kurtosis is close to 3
 
+# ------------------
+# Total applicants
+# data without transformation (not normal, logarithmic):
+hist(data.wo.complete$Total.applicants, col="aquamarine2")
 skewness(data.wo.complete$Total.applicants)
 kurtosis(data.wo.complete$Total.applicants)
+# data with transformation (normal):
+hist(data.wo.complete$log.Total.applicants, col="aquamarine2")
+skewness(data.wo.complete$log.Total.applicants) # 0.06906843
+kurtosis(data.wo.complete$log.Total.applicants) # 2.679279
+# ------------------
+# Tuition fees
+# data without transformation (not normal, not logarithmic)
+hist(data.wo.complete$Tuition.fees, col="aquamarine2")
+skewness(data.wo.complete$Tuition.fees) 
+kurtosis(data.wo.complete$Tuition.fees) 
+# data with transformation (NOT normal, NOT logarithmic)
+hist(data.wo.complete$log.Tuition.fees, col="aquamarine2")
+skewness(data.wo.complete$log.Tuition.fees) # -0.3642279
+kurtosis(data.wo.complete$log.Tuition.fee)  # 1.716641
 
-skewness(data.wo.complete$log.Total.applicants)
-kurtosis(data.wo.complete$log.Total.applicants)
-
-skewness(data.wo.complete$Tuition.fees)
-kurtosis(data.wo.complete$Tuition.fees)
-
-skewness(data.wo.complete$log.Tuition.fees)
-kurtosis(data.wo.complete$log.Tuition.fee)
-
-
+# ----------------------------------
 # QQ Plot
 # when the variable is normally distributed
 # points are aligned on the first bisector
 
+# ------------------
+# Total applicants
+
+# without transformation
 qqnorm(data.wo.complete$Total.applicants,main="Normality study Total Applicants")
 qqline(data.wo.complete$Total.applicants)
+# with transformation
 qqnorm(data.wo.complete$log.Total.applicants,main="Normality study log Total Applicants")
 qqline(data.wo.complete$log.Total.applicants)
 
+# ------------------
+# Tuition fees
+
+# without transformation
 qqnorm(data.wo.complete$Tuition.fees,main="Normality study Tuition fees")
 qqline(data.wo.complete$Tuition.fees)
+# with transformation -> still NOT normal
 qqnorm(data.wo.complete$log.Tuition.fees,main="Normality study log Tuition.fees")
 qqline(data.wo.complete$log.Tuition.fees)
 
-# Normality tests 
+# ------------------------------------------------------------------------------
+# Normality study - Analytical tests
+
 # pvalue: probability to do wrong by rejecting Ho
 # if P-value < 5%, then we reject Ho
 # If pvalue > 5%, we accept Ho
 
-
+# ----------------------------------
 # Shapiro test
+# Even log is not normally distributed???
 # H0 : normality agains H1 : non normality
-shapiro.test(data.wo.complete$Total.applicants)
-shapiro.test(data.wo.complete$log.Total.applicants)
+shapiro.test(data.wo.complete$Total.applicants) # p-value < 2.2e-16
+shapiro.test(data.wo.complete$log.Total.applicants) # p-value = 0.002941
 
 
+# ----------------------------------
 # Jarque Bera test (based on Skewness and Kurtosis)
 # H0 : normality agains H1 : non normality
 install.packages("tseries")
@@ -215,13 +240,14 @@ library(tseries)
 jarque.bera.test(data.wo.complete$Total.applicants)
 jarque.bera.test(data.wo.complete$log.Total.applicants)
 
-
+# ----------------------------------
 # create the variable Acceptance.rate
 str(data)
 
 data.wo.complete$Acceptance.rate <- data.wo.complete$Total.qualified/data.wo.complete$Total.applicants
 class(data.wo.complete$Acceptance.rate)
 
+hist(data.wo.complete$Acceptance.rate, col="aquamarine2") # a bit skewed
 boxplot(data.wo.complete$Acceptance.rate)
 
 jarque.bera.test(data.wo.complete$Acceptance.rate)
