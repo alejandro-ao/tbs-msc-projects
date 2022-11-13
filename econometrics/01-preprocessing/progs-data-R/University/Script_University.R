@@ -1,6 +1,5 @@
 ################################################
-####Step 1 : import and clean data #############
-################################################
+#### Step 1 : import and clean data
 
 # ------------------------------------------------------------------------------
 # IMPORT AND SETUP
@@ -254,10 +253,11 @@ jarque.bera.test(data.wo.complete$Acceptance.rate)
 
 
 ################################################
-####Step 2 : Answer questions      #############
-################################################
+#### STEP 2: TESTS
 
-# 7.	Are there relatively more private universities awarding doctorates? 
+# ------------------------------------------------------------------------------
+# Are there relatively more private universities awarding doctorates? 
+
 
 tab <- table(data.wo.complete$Type,data.wo.complete$Higher.degree.rec)
 tab
@@ -267,39 +267,41 @@ prop.table(tab,1)
 #column percentages
 prop.table(tab,2)
 
+
+
 #Graphic
 mosaicplot(tab,color=hcl(c(360,240,120)),las=1, xlab="Highest degree", ylab="Type",cex=0.5)
 
 
-
+# ----------------------------------
 #Chi squared test
-#study the relationship between two qualitative or categorical variables
-# H0 : the two variables are independent agains H1 : the two variabls are linked
+# 2 Categorical variables, so chi-squared to test for significance
+# study the relationship between two qualitative or categorical variables
+# H0 : the two variables are independent against H1 : the two variables are linked
 
-
-chisq.test(tab)
-# pvalue <<< 5% so we reject Ho: there is a significant 
+# p-value < 5% by a lot!! so we reject Ho: there is a significant
 # difference between private and public universities
+chisq.test(tab)
 
 
-# you can also use the fonction CrossTable from the package "gmodels"
+
+# you can also use the function CrossTable from the package "gmodels"
 install.packages("gmodels")
 library(gmodels)
 CrossTable(data.wo.complete$Type,data.wo.complete$Higher.degree.rec,prop.r=T,prop.c=T,prop.t=F, prop.chisq=F, chisq=T)
 
 
 
-
-# 8. Can we conclude that private universities have higher tuition fees ? (statistics, graph and test)
+# ------------------------------------------------------------------------------
+# Can we conclude that private universities have higher tuition fees ? 
+# (statistics, graph and test)
 
 # Statistics
-
 tapply(data.wo.complete$Tuition.fees, data.wo.complete$Type, summary)
 
 #Graph
-
 boxplot(data.wo.complete$Tuition.fees~data.wo.complete$Type,
-        col = "blue", border = "black", las=2,
+        col = "aquamarine2", border = "grey", las=2,
         main = "Tuition fees",
         xlab="",
         ylab = "Type")
@@ -316,7 +318,7 @@ var.test(data.wo.complete$Tuition.fees~data.wo.complete$Type)
 
 # Student t-test
 # H0 : m1 = m2 against H1 : m1 # m2
-
+hist(data.wo.complete$Tuition.fees)
 t.test (data.wo.complete$Tuition.fees~data.wo.complete$Type, var.equal=FALSE)
 
 
@@ -341,9 +343,11 @@ tapply(data.wo.complete$Tuition.fees, data.wo.complete$Higher.degree.rec, summar
 #Graph
 
 boxplot(data.wo.complete$Tuition.fees~data.wo.complete$Higher.degree.rec,
-        col = "blue", border = "black",
+        col = "aquamarine2", border = "black",
         main = "Tuition fees",las=2,xlab=" ",
         ylab = "Higher degree")
+
+hist(data.wo.complete$log.Tuition.fees)
 
 # Test
 # Crossing of a continuous (quantitative) and categorical variable (qualitatives) with k categories
@@ -358,9 +362,7 @@ bartlett.test(data.wo.complete$Tuition.fees~data.wo.complete$Higher.degree.rec)
 # check normally in  k sub samples
 
 data.B <- data.wo.complete[data.wo.complete$Higher.degree.rec=="Bachelor's degree",]
-
 data.M <- data.wo.complete[data.wo.complete$Higher.degree.rec=="Master's degree",]
-
 data.D <- data.wo.complete[data.wo.complete$Higher.degree.rec=="Doctor's degree",]
 
 
