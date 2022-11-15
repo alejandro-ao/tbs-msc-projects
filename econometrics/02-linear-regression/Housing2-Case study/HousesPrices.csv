@@ -1,0 +1,31 @@
+ID;Town;HouseSize;NumberOfRooms; GardenSize ;LivingRoomSize;DistanceFromToulouseCenter;AirConditioned;Heating; Price 
+1;launaguet;175;6;4500;64;11;yes;electric;345
+2;vieille toulouse;126;4;5000;28;14;no;gas;295
+3;launaguet;175;6;5900;56;11;yes;solar;380
+4;tournefeuille;130;5;3800;35;9;yes;solar;341
+5;st jean;181;7;3000;42;12;no;gas;367
+6;colomiers;158;6;3000;52;12;no;gas;360
+7;launaguet;161;6;3000;36;11;no;gas;350
+8;tournefeuille;112;6;3000;21;9;no;electric;294
+9;toulouse;148;4;2500;40;11;no;gas;311
+10;tournefeuille;189;7;1678;38;9;yes;solar;375
+11;tournefeuille;111;5;1500;37;9;no;gas;278
+12;plaisance;107;4;1500;38;14;no;electric;250
+13;castanet;109;4;1426;36;13;no;electric;267
+14;mons;189;7;1400;34;15;yes;solar;396
+15;launaguet;154;7;1400;56;11;no;gas;353
+16;tournefeuille;156;6;1330;38;9;no;solar;318
+17;balma;130;5;1300;36;7;no;gas;319
+18;colomiers;123;7;1300;37;12;no;solar;286
+19;lacroix falgarde;133;6;1200;36;13;no;gas;280
+20;auzeville;139;5;1110;32;10;no;gas;330
+21;toulouse;103;4;1000;39;7;no;electric;265
+22;blagnac;112;5;850;24;7;no;electric;260
+23;tournefeuille;106;4;850;32;9;no;electric;250
+24;aucamville;119;5;750;24;9;no;gas;275
+25;balma;168;6;620;32;7;yes;gas;335
+26;blagnac;154;5;600;40;7;yes;solar;371
+27;st jean;118;5;470;38;12;no;electric;255
+28;toulouse;118;5;398;54;11;no;electric;254
+29;montrabe;168;6;350;40;10;yes;gas;345
+30;blagnac;145;4;200;36;7;yes;gas;302
