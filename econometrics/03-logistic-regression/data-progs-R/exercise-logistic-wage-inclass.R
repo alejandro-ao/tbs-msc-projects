@@ -4,7 +4,7 @@
 
 install.packages("ISLR2")
 library("ISLR2")
-# Wage
+?Wage
 # Default
 
 data <- Wage
@@ -23,30 +23,27 @@ median(wage)
 boxplot(wage)
 
 # Create 0/1 variable
-highwage <- factor(ifelse(wage > 150,1,0))
-# Choice of breakpoint= 105(=median) ou 150....
+highwage <- factor(ifelse(wage > 105,1,0))
+# Choice of breakpoint= 105(=median) or 150....
 # highwage <- factor(ifelse(wage>105,1,0)) # 105: median of wage
 
-data.lr <- data.frame(data,highwage)
-View(data.lr)
-str(data.lr)
-summary(data.lr)
+# append target column to dataset
+data.final <- data.frame(data,highwage)
+View(data.final)
+str(data.final)
+summary(data.final)
 
 # -------------------------------------------------------------
 # EDA
 # -------------------------------------------------------------
 # Descriptive statistics
 library(ggplot2)
-ggplot(data.lr, aes(x=highwage, age)) +
+ggplot(data.final, aes(x=highwage, age)) +
   geom_boxplot()
 # r returns a boxplot by default
 plot(highwage,age)
+# high wage with
 table(highwage, education)
-
-# too few observations in the 1st category for Education
-# merge the two lowest education categories
-data.res <- data.lr[(education != "1. < HS Grad"),]
-
 
 # -------------------------------------------------------------
 # Classical logistic regression
@@ -57,11 +54,12 @@ data.res <- data.lr[(education != "1. < HS Grad"),]
 # --------------------------
 
 # we need a continuous target for linear regression
-data.res$highwage <- as.numeric(data.res$highwage)
-lm.fit.1 <- lm(highwage~age, data=data.res)
+data.linear <- data.final
+data.linear$highwage <- as.numeric(data.linear$highwage)
+lm.fit.1 <- lm(highwage~age, data=data.linear)
 summary(lm.fit.1)
 
-ggplot(data.res, aes(x=age, y=highwage)) +
+ggplot(data.linear, aes(x=age, y=highwage)) +
   geom_point()
 plot(age, highwage)
 abline(lm.fit.1, col="red")
@@ -73,15 +71,12 @@ abline(lm.fit.1, col="red")
 # Estimate logistic model
 # --------------------------
 
-# turn target back to factor
-data.res$highwage <- as.factor(data.res$highwage)
-attach(data.res)
-# mod.1 <- glm(highwage~age+education+year,family=binomial, data=data.res)
-mod.1 <- glm(highwage~year,family=binomial, data=data.res)
+# mod.1 <- glm(highwage~age+education+year,family=binomial, data=data.final)
+mod.1 <- glm(highwage~year,family=binomial, data=data.final)
 summary(mod.1)
 
-data.res$highwage <- as.numeric(data.res$highwage)
-plot(data.res$age, data.res$highwage)
+data.final$highwage <- as.numeric(data.final$highwage)
+plot(data.final$age, data.final$highwage)
 
 
 #-----------------
@@ -90,9 +85,9 @@ plot(data.res$age, data.res$highwage)
 
 # Training set and test set
 set.seed(1)
-row.number <- sample(1:nrow(data.res), 0.8*nrow(data.res))
-train=data.res[row.number,]
-test=data.res[-row.number,]
+row.number <- sample(1:nrow(data.final), 0.8*nrow(data.final))
+train=data.final[row.number,]
+test=data.final[-row.number,]
 dim(train)
 dim(test)
 View(train)
@@ -143,10 +138,10 @@ prop.table(table(pred.hw, test$highwage),2)
 
 library("splines") # to use bs or ns functions
 library("gam") # to use gam.plot or gam function
-View(data.res)
+View(data.final)
 
 # natural cubic splines and GAMs
-mod.gam <- glm(highwage~ns(age,knots=c(30,45,60))+ns(year,df=5)+education, family=binomial,data=data.res)
+mod.gam <- glm(highwage~ns(age,knots=c(30,45,60))+ns(year,df=5)+education, family=binomial,data=data.final)
 summary(mod.gam)
 par(mfrow=c(1,3))
 plot.Gam(mod.gam, se=TRUE, col="red")
@@ -156,7 +151,7 @@ plot.Gam(mod.gam, se=TRUE, col="red")
 
 
 # smoothing splines
-#mod.gam2 <- gam(highwage~s(age,4)+s(year, 5)+education, family=binomial, data=data.res)
+#mod.gam2 <- gam(highwage~s(age,4)+s(year, 5)+education, family=binomial, data=data.final)
 #par(mfrow=c(1,1))
 #plot.Gam(mod.gam2, se=TRUE, col="red")
 

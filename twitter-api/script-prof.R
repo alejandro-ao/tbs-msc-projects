@@ -32,7 +32,7 @@ twitter_token <- create_token(app = appname,consumer_key = key, consumer_secret 
 
 
 ## Data collection (300 tweets)
-Macrondata <- search_tweets("Macron OR MACRON OR EMMANUEL MACRON OR Emmanuel Macron OR French President OR Président Français", n=300)
+Macrondata <- search_tweets("Macron OR MACRON OR EMMANUEL MACRON OR Emmanuel Macron OR French President OR Pr?sident Fran?ais", n=300)
 
 class(Macrondata)
 
